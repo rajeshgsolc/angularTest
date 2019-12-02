@@ -19,7 +19,8 @@ export class LoginComponent implements OnInit {
   @Output() submitEM = new EventEmitter();
   constructor(private authService: AuthServiceService) { }
   submit() {
-    if (this.form.valid) {
+    console.log(this.form.value)
+    if (this.form.value.email && this.form.value.password) {
         this.authService.login(this.form.value)
           .pipe(first())
           .subscribe(data => {

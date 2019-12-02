@@ -5,21 +5,20 @@ import { HttpClient, HttpHeaders} from '@angular/common/http';
 import {LocalStorageKey, Api} from '../utils/app-const';
 import {map} from 'rxjs/operators';
 import {ApiResponse} from './../model/apiResponse-model';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthServiceService {
   currentUserSubject:BehaviorSubject<AuthUser>;
-  http;
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
     })
   };
-  constructor(http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<AuthUser>(undefined);
-    this.http = http;
   }
 
   public get currentUserValue(): AuthUser {
@@ -40,6 +39,15 @@ export class AuthServiceService {
       }
       return apiResponse;
     })
-    return this.http.post(Api.login, userObj, this.httpOptions).pipe(tokenPipe);
+    return this.http.post<ApiResponse<AuthUser>>(Api.login, userObj, this.httpOptions).pipe(tokenPipe);
+  }
+  logout() {
+    localStorage.removeItem(LocalStorageKey.authUser);
+    // localStorage.removeItem(LocalStorageKey.projectSections);
+    // localStorage.removeItem(LocalStorageKey.selectedProject);
+    // localStorage.removeItem(LocalStorageKey.userProfile);
+    // localStorage.removeItem(LocalStorageKey.userPlan);
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/']);
   }
 }

@@ -9,7 +9,9 @@ import { HomeComponent } from './component/home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AngularMaterialModule} from './module/angular-material/angular-material.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {AuthHttpInterceptor} from './service/auh-http-interceptor';
+import {ErrorInterceptor} from '@app/service/error-http-interceptor';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,12 @@ import {HttpClientModule} from '@angular/common/http';
     HttpClientModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true
+  },
+    {
+      provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -3,4 +3,5 @@ export class AuthUser {
   email: string;
   token: string;
   password: string;
+  type?: string;
 }
